@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Evangalinmart | Fresh Market</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main>
+    <section class="hero wrap">
+        <div class="hero-copy"><span class="eyebrow">FRESH PICKS, HAPPY DAYS</span><h1>Good food,<br><em>good every day.</em></h1><p>Fresh fruits, crisp vegetables and pantry favourites, picked with care for your everyday table.</p><a href="#shop" class="button button-dark">Shop today's fresh picks <span>→</span></a><div class="hero-note"><span>✳</span> Fresh from our market to your home</div></div>
+        <div class="hero-art"><img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=90" alt="Fresh fruits and vegetables at a market"><div class="hero-sticker">FRESH<br>EVERY DAY <b>✿</b></div><div class="hero-caption">A little fresher. A little happier.</div></div>
+    </section>
+    <section class="category-strip wrap"><div><span class="eyebrow">A GOOD PLACE TO START</span><h2>Shop fresh categories</h2></div><div class="category-links"><a th:each="category : ${categories}" th:href="@{/(q=${category})}" th:text="${category}">Fresh Fruits</a></div></section>
+    <section class="shop-section wrap" id="shop">
+        <div class="section-heading"><div><span class="eyebrow">FRESH FROM THE MARKET</span><h2 th:text="${query != '' ? 'Fresh picks: ' + query : 'Good things for your grocery basket'}">Good things for your grocery basket</h2></div><span class="result-count" th:text="${#lists.size(products) + ' fresh picks'}">8 fresh picks</span></div>
+        <div class="product-grid" th:if="${!#lists.isEmpty(products)}">
+            <article class="product-card" th:each="product : ${products}"><a class="product-image" th:href="@{/products/{id}(id=${product.id})}"><img th:src="${product.imageUrl}" th:alt="${product.name}"><span class="product-tag" th:if="${product.featured}">A FAVOURITE</span><span class="quick-view">Take a closer look ↗</span></a><div class="product-info"><div><span class="product-category" th:text="${product.category}">Category</span><h3><a th:href="@{/products/{id}(id=${product.id})}" th:text="${product.name}">Product name</a></h3></div><strong th:text="${'₹' + #numbers.formatDecimal(product.price, 1, 'COMMA', 2, 'POINT')}">₹899.00</strong></div><form th:action="@{/cart/add/{id}(id=${product.id})}" method="post"><button class="add-button" type="submit">Add to bag <span>＋</span></button></form></article>
+        </div>
+        <div class="empty-state" th:if="${#lists.isEmpty(products)}"><span>⌕</span><h3>No lovely finds just yet</h3><p>Try another search and we’ll take another look.</p><a class="button button-dark" th:href="@{/}">See everything</a></div>
+    </section>
+    <section class="promise wrap"><div><span>✿</span><h3>Freshly picked</h3><p>Good produce for your table.</p></div><div><span>♡</span><h3>Everyday essentials</h3><p>All your pantry favourites.</p></div><div><span>✧</span><h3>Easy shopping</h3><p>Your basket is just a click away.</p></div></section>
+</main>
+<footer class="footer"><a class="brand footer-brand" th:href="@{/}"><span class="brand-mark">e</span><span>evangalin<span class="brand-light">mart</span><small>FRESH MARKET</small></span></a><span>Fresh from our market to your table. © 2026 Evangalinmart</span><a th:href="@{/admin/products}">Manage the shop ↗</a></footer>
+</body>
+</html>

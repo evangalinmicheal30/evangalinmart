@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${product.name + ' | Evangalinmart'}">Grocery | Evangalinmart</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="wrap detail-page">
+    <a class="back-link" th:href="@{/}">← Back to the fresh market</a>
+    <div class="detail-grid">
+        <div class="detail-image"><img th:src="${product.imageUrl}" th:alt="${product.name}"></div>
+        <div class="detail-copy">
+            <span class="eyebrow" th:text="${product.category}">CATEGORY</span>
+            <h1 th:text="${product.name}">Grocery item</h1>
+            <div class="detail-price" th:text="${'₹' + #numbers.formatDecimal(product.price, 1, 'COMMA', 2, 'POINT')}">₹0</div>
+            <p th:text="${product.description}">Fresh market description.</p>
+            <p class="detail-small">Fresh picks for your everyday table, packed with care and on their way to your home.</p>
+            <form th:if="${session.loggedInRole == 'BUYER'}" th:action="@{/cart/add/{id}(id=${product.id})}" method="post"><button class="button button-dark button-wide">Add to your basket <span>→</span></button></form>
+            <div class="detail-perks">✿ Fresh market pick &nbsp; · &nbsp; ♡ Easy everyday shopping</div>
+        </div>
+    </div>
+
+    <section class="reviews-section" id="reviews">
+        <div class="reviews-heading">
+            <div><span class="eyebrow">BUYER FEEDBACK</span><h2>Reviews for this pick</h2></div>
+            <div class="review-rating" th:if="${reviewCount > 0}"><strong th:text="${#numbers.formatDecimal(averageRating, 1, 1)}">0.0</strong><span class="review-stars" th:each="star : ${#numbers.sequence(1, 5)}" th:text="${star <= averageRating ? '★' : '☆'}">★</span><small th:text="${reviewCount + (reviewCount == 1 ? ' review' : ' reviews')}">0 reviews</small></div>
+        </div>
+        <div class="review-notice" th:if="${reviewNotice}" th:text="${reviewNotice}">Review added.</div>
+        <div class="review-error" th:if="${reviewError}" th:text="${reviewError}">Please check your review.</div>
+        <div class="review-layout">
+            <form class="review-form" th:if="${session.loggedInRole == 'BUYER' and !hasReviewed}" th:action="@{/products/{id}/reviews(id=${product.id})}" method="post">
+                <h3>Share your experience</h3>
+                <label>Your rating<select name="rating" required><option value="">Choose stars</option><option value="5">★★★★★ — Loved it</option><option value="4">★★★★ — Really good</option><option value="3">★★★ — Good</option><option value="2">★★ — Could be better</option><option value="1">★ — Not for me</option></select></label>
+                <label>Your review<textarea name="comment" rows="4" maxlength="1200" required placeholder="What did you think of this grocery item?"></textarea></label>
+                <button class="button button-dark" type="submit">Post review <span>→</span></button>
+            </form>
+            <div class="review-login-note" th:if="${session.loggedInRole == 'BUYER' and hasReviewed}">Thanks for sharing your feedback. You have reviewed this item.</div>
+            <div class="review-login-note" th:if="${session.loggedInRole == 'SELLER'}">Buyer reviews appear here after customers share their feedback.</div>
+            <div class="review-list" th:if="${!#lists.isEmpty(reviews)}">
+                <article class="review-card" th:each="review : ${reviews}">
+                    <div class="review-card-heading"><strong th:text="${review.reviewerName}">Buyer</strong><time th:text="${review.createdAt}">Date</time></div>
+                    <div class="review-stars" th:each="star : ${#numbers.sequence(1, 5)}" th:text="${star <= review.rating ? '★' : '☆'}">★</div>
+                    <p th:text="${review.comment}">Review comment</p>
+                </article>
+            </div>
+            <div class="review-empty" th:if="${#lists.isEmpty(reviews)}">No reviews yet. Be the first buyer to share what you think.</div>
+        </div>
+    </section>
+</main>
+<footer class="footer"><span>© 2026 Evangalinmart</span><a th:href="@{/}">Continue shopping</a></footer>
+</body>
+</html>

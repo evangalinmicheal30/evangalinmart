@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header class="site-header" th:fragment="navbar">
+    <div class="announcement">FRESH FROM OUR MARKET TO YOUR TABLE <span>✦</span> Thoughtful picks for every day</div>
+    <nav class="navbar">
+        <a class="brand" th:href="@{/}"><span class="brand-mark">e</span><span>evangalin<span class="brand-light">mart</span><small>FRESH MARKET</small></span></a>
+        <form class="search" th:action="@{/}" method="get"><input type="search" name="q" placeholder="Search fruits, veggies and more…" th:value="${query}"/><button aria-label="Search">⌕</button></form>
+        <div class="nav-actions"><span class="welcome-user" th:text="${'Hi, ' + session.loggedInName}">Hi there</span><a class="nav-link" th:if="${session.loggedInRole == 'SELLER'}" th:href="@{/admin/products}">Seller desk</a><a class="nav-link" th:if="${session.loggedInRole == 'BUYER'}" th:href="@{/orders}">My orders</a><a class="cart-link" th:if="${session.loggedInRole == 'BUYER'}" th:href="@{/cart}"><span>Basket</span><b th:text="${cartCount}">0</b></a><form th:action="@{/logout}" method="post"><button class="logout-button" type="submit">Log out</button></form></div>
+    </nav>
+    <div class="subnav"><a th:href="@{/}">Market home</a><a th:href="@{/(q='Fresh Fruits')}">Fresh fruits</a><a th:href="@{/(q='Fresh Vegetables')}">Vegetables</a><a th:href="@{/(q='Dairy & Eggs')}">Dairy &amp; eggs</a><a th:href="@{/(q='Bakery')}">Bakery</a><a th:href="@{/(q='Pantry Staples')}">Pantry</a><a th:if="${session.loggedInRole == 'SELLER'}" th:href="@{/admin/orders}">Orders</a><a th:if="${session.loggedInRole == 'BUYER'}" th:href="@{/orders}">My orders</a></div>
+</header>
+</body>
+</html>
